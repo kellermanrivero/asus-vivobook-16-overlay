@@ -16,6 +16,7 @@ DEPEND="${RDEPEND}"
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-asus-vivobook-16.patch
+	"${FILESDIR}"/${PN}-low_volume_for_speaker_protection.patch
 )
 
 src_install() {

@@ -1,0 +1,13 @@
+diff --git a/ucm2/codecs/qcom-lpass/wsa-macro/init.conf b/ucm2/codecs/qcom-lpass/wsa-macro/init.conf
+index 29f7c39..2a5c844 100644
+--- a/ucm2/codecs/qcom-lpass/wsa-macro/init.conf
++++ b/ucm2/codecs/qcom-lpass/wsa-macro/init.conf
+@@ -1,6 +1,6 @@
+ # WSA Digital codec specific volume control settings
+ 
+ BootSequence [
+-	cset "name='WSA_RX0 Digital Volume' 84"
+-	cset "name='WSA_RX1 Digital Volume' 84"
++	cset "name='WSA_RX0 Digital Volume' 5"
++	cset "name='WSA_RX1 Digital Volume' 5"
+ ]
