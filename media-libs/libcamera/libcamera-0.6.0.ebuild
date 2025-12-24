@@ -3,15 +3,16 @@
 
 EAPI=8
 
+inherit git-r3
 inherit meson
 
 DESCRIPTION="A complex camera support library for Linux, Android, and ChromeOS"
 HOMEPAGE="https://libcamera.org/"
-SRC_URI="https://github.com/kellermanrivero/${PN}/archive/v${PV}.tar.gz -> ${P}.tar.gz"
+EGIT_REPO_URI="https://git.linuxtv.org/libcamera.git git://linuxtv.org/libcamera.git"
+EGIT_COMMIT="v${PV}"
 
 LICENSE="LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~arm64"
 
 DEPEND="
 	dev-libs/libyaml:=
@@ -34,18 +35,16 @@ DEPEND="
 	qt6?
 	(
 		dev-qt/qtbase:6
-		dev-qt/qtbase:6[gui] 
+		dev-qt/qtbase:6[gui]
 		dev-qt/qtbase:6[widgets]
 	)
 	tiff? ( media-libs/tiff:= )
 	trace? ( dev-util/lttng-ust:= )
 	udev? ( virtual/libudev:= )
-	unwind? ( sys-libs/libunwind:= )	
+	unwind? ( sys-libs/libunwind:= )
 "
 RDEPEND="${DEPEND}"
-BDEPEND=""
 
-#IUSE="debug drm gnutls gstreamer jpeg libevent qt5 sdl tiff trace udev unwind v4l2"
 IUSE="debug drm gnutls gstreamer jpeg tiff libevent qt6 sdl trace udev unwind v4l"
 REQUIRED_USE="qt6? ( tiff )"
 
@@ -61,5 +60,5 @@ src_configure() {
 		$(meson_use v4l v4l2)
 	)
 
-	meson_src_configure "-Dpipelines=simple"
+	meson_src_configure "-Dpipelines=ipu3,simple,uvcvideo"
 }

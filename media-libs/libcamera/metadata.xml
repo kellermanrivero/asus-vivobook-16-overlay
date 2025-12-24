@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "https://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+  <maintainer type="person">
+    <email>krsloco@gmail.com</email>
+    <name>Kellerman Rivero</name>
+  </maintainer>
+  <use>
+    <flag name="drm">Build with drm support for cam tool</flag>
+    <flag name="libevent">Build with libevent support for lc-compliance testing tool</flag>
+    <flag name="trace">Build with tracing capabilities</flag>
+  </use>
+  <upstream>
+    <remote-id type="cpe">cpe:/a:libcamera.org:libcamera</remote-id>
+  </upstream>
+</pkgmetadata>
