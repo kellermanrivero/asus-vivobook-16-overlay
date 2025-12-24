@@ -8,7 +8,9 @@ inherit meson
 
 DESCRIPTION="A complex camera support library for Linux, Android, and ChromeOS"
 HOMEPAGE="https://libcamera.org/"
-EGIT_REPO_URI="https://git.linuxtv.org/libcamera.git git://linuxtv.org/libcamera.git"
+
+# Official mirror, check https://libcamera.org/contributing.html
+EGIT_REPO_URI="https://git.linuxtv.org/libcamera.git"
 EGIT_COMMIT="v${PV}"
 
 LICENSE="LGPL-2.1+"
