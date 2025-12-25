@@ -7,7 +7,8 @@ inherit meson
 
 DESCRIPTION="A complex camera support library for Linux, Android, and ChromeOS"
 HOMEPAGE="https://libcamera.org"
-SRC_URI="https://gitlab.freedesktop.org/camera/libcamera/-/archive/v${PV}/libcamera-v${PV}.tar.gz -> ${P}.tar.gz"
+SRC_URI="https://gitlab.freedesktop.org/camera/libcamera/-/archive/v${PV}/libcamera-v${PV}.tar.bz2 -> ${P}.tar.bz2"
+S="${WORKDIR}/libcamera-v${PV}"
 LICENSE="Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+"
 SLOT="0"
 KEYWORDS="~arm64"

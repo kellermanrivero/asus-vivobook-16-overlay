@@ -11,6 +11,6 @@ LICENSE=Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+
 RDEPEND=dev-libs/libyaml:= dev-python/jinja2 dev-python/ply dev-python/pyyaml openssl? ( dev-libs/openssl:= ) gnutls? ( net-libs/gnutls:= ) gstreamer? ( media-libs/gstreamer:= ) libevent? ( dev-libs/libevent:= drm? ( x11-libs/libdrm:= ) sdl? ( media-libs/libsdl2:= jpeg? ( media-libs/libjpeg-turbo:= ) ) ) qt6? ( dev-qt/qtbase:6 dev-qt/qtbase:6[gui,widgets] ) tiff? ( media-libs/tiff:= ) trace? ( dev-util/lttng-ust:= ) udev? ( virtual/libudev:= ) unwind? ( sys-libs/libunwind:= )
 REQUIRED_USE=qt6? ( tiff )
 SLOT=0
-SRC_URI=https://gitlab.freedesktop.org/camera/libcamera/-/archive/v0.6.0/libcamera-v0.6.0.tar.gz -> libcamera-0.6.0.tar.gz
+SRC_URI=https://gitlab.freedesktop.org/camera/libcamera/-/archive/v0.6.0/libcamera-v0.6.0.tar.bz2 -> libcamera-0.6.0.tar.bz2
 _eclasses_=toolchain-funcs	98d9f464d912ae6b7316fb8a3721f5db	flag-o-matic	a7afe42e95fb46ce9691605acfb24672	multiprocessing	1e32df7deee68372153dca65f4a7c21f	ninja-utils	3a59a39e97af0f7c03f49cf3c22f262b	python-utils-r1	dbb8c4d794033ad7e7221eaf567a6c90	meson	99e6a34d0f7039439dad788f7443b574
-_md5_=3e0b38fc8a1324b56952cd10b1718b55
+_md5_=3e9e0f98487ae9261fff8f00567a9bb6
