@@ -16,7 +16,7 @@ LICENSE="Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+"
 SLOT="0"
 KEYWORDS="~arm64"
 IUSE="drm gui gnutls openssl gstreamer jpeg tiff tools qt6 sdl trace +udev elfutils unwind v4l test"
-REQUIRED_USE="qt6? ( tiff gui ) jpeg? ( sdl ) sdl? ( gui )"
+REQUIRED_USE="qt6? ( tiff gui )"
 
 COMMON_DEPEND="
 	dev-libs/libyaml:=
@@ -97,7 +97,7 @@ src_configure() {
 		$(meson_feature gstreamer)
 		$(meson_feature gnutls)
 		$(meson_feature openssl)
-		$(meson_feature qt6 qcam)
+		$(meson_feature tools qcam)
 		$(meson_feature trace tracing)
 		$(meson_feature unwind libunwind)
 		$(meson_feature elfutils libdw)
