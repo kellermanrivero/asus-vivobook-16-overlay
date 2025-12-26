@@ -97,7 +97,6 @@ src_configure() {
 		$(meson_feature gstreamer)
 		$(meson_feature gnutls)
 		$(meson_feature openssl)
-		$(meson_feature tools qcam)
 		$(meson_feature trace tracing)
 		$(meson_feature unwind libunwind)
 		$(meson_feature elfutils libdw)
@@ -105,6 +104,17 @@ src_configure() {
 		$(meson_feature v4l v4l2)
 		$(meson_use test)
 	)
+
+	# QCam requires both tools & qt6 USE flags to be enabled
+	if use tools && use qt6; then
+		emesonargs+=(
+			-Dqcam=enabled
+		)
+	else
+		emesonargs+=(
+			-Dqcam=disabled
+		)
+	fi
 
 	meson_src_configure
 }
