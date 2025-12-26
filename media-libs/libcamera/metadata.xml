@@ -9,8 +9,9 @@
     <flag name="drm">Build with drm support for cam tool</flag>
     <flag name="libevent">Build with libevent support for lc-compliance testing tool</flag>
     <flag name="trace">Build with tracing capabilities</flag>
-    <flag name="openssl">Build with IPA module signing using OpenSSL crypto library</flag>
-    <flag name="gnutls">Build with IPA module signing using GNU TLS crypto library</flag>
+    <flag name="test">Compile and include the tests</flag>
+    <flag name="openssl">Build with IPA module signing using <pkg>dev-libs/openssl</pkg> (has no effect if USE=gnutls is set)</flag>
+    <flag name="gnutls">Build with IPA module signing using <pkg>net-libs/gnutls</pkg></flag>
   </use>
   <upstream>
     <remote-id type="freedesktop-gitlab">camera/libcamera.git</remote-id>

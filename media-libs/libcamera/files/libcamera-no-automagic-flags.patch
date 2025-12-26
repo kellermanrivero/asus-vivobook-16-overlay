@@ -1,5 +1,5 @@
 diff --git a/meson_options.txt b/meson_options.txt
-index c052e85aa..4e00ad976 100644
+index c052e85aa..836a49a71 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
 @@ -16,6 +16,21 @@ option('cam',
@@ -24,12 +24,8 @@ index c052e85aa..4e00ad976 100644
  option('documentation',
          type : 'feature',
          value : 'auto',
-@@ -28,9 +43,24 @@ option('doc_werror',
- 
- option('gstreamer',
-         type : 'feature',
--        value : 'auto',
-+        value : 'disabled',
+@@ -31,6 +46,21 @@ option('gstreamer',
+         value : 'auto',
          description : 'Compile libcamera GStreamer plugin')
  
 +option('tiff',
@@ -50,35 +46,6 @@ index c052e85aa..4e00ad976 100644
  option('ipas',
          type : 'array',
          choices : ['ipu3', 'mali-c55', 'rkisp1', 'rpi/pisp', 'rpi/vc4', 'simple',
-@@ -44,7 +74,7 @@ option('lc-compliance',
- 
- option('libunwind',
-         type : 'feature',
--        value : 'auto',
-+        value : 'disabled',
-         description : 'Enable libunwind integration for backtrace generation')
- 
- option('pipelines',
-@@ -83,16 +113,16 @@ option('test',
- 
- option('tracing',
-         type : 'feature',
--        value : 'auto',
-+        value : 'disabled',
-         description : 'Enable tracing (based on lttng)')
- 
- option('udev',
-        type : 'feature',
--       value : 'auto',
-+       value : 'disabled',
-        description : 'Enable udev support for hotplug')
- 
- option('v4l2',
-         type : 'feature',
--        value : 'auto',
-+        value : 'disabled',
-         description : 'Compile the V4L2 compatibility layer',
-         deprecated : {'true': 'enabled', 'false': 'disabled'})
 diff --git a/src/apps/cam/meson.build b/src/apps/cam/meson.build
 index cd7f120f9..1711630b3 100644
 --- a/src/apps/cam/meson.build
@@ -127,3 +94,30 @@ index 575408b2c..02db21e2c 100644
      if libcrypto.found()
          config_h.set('HAVE_CRYPTO', 1)
      endif
+diff --git a/test/meson.build b/test/meson.build
+index 52f04364e..633bd6704 100644
+--- a/test/meson.build
++++ b/test/meson.build
+@@ -27,16 +27,19 @@ subdir('libtest')
+ 
+ subdir('camera')
+ subdir('controls')
+-subdir('gstreamer')
++# TODO: Those tests fails on Gentoo due to portage user does not belong to video group
++#subdir('gstreamer')
+ subdir('ipa')
+ subdir('ipc')
+ subdir('log')
+-subdir('media_device')
++# TODO: Those tests fails on Gentoo due to portage user does not belong to video group
++#subdir('media_device')
+ subdir('process')
+ subdir('py')
+ subdir('serialization')
+ subdir('stream')
+-subdir('v4l2_compat')
++# TODO: Those tests fails on Gentoo due to portage user does not belong to video group
++#subdir('v4l2_compat')
+ subdir('v4l2_subdevice')
+ subdir('v4l2_videodevice')
+ 
