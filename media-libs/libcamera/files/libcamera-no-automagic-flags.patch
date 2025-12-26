@@ -1,5 +1,5 @@
 diff --git a/meson_options.txt b/meson_options.txt
-index c052e85aa..836a49a71 100644
+index c052e85aa..ac1d4dce1 100644
 --- a/meson_options.txt
 +++ b/meson_options.txt
 @@ -16,6 +16,21 @@ option('cam',
@@ -46,6 +46,18 @@ index c052e85aa..836a49a71 100644
  option('ipas',
          type : 'array',
          choices : ['ipu3', 'mali-c55', 'rkisp1', 'rpi/pisp', 'rpi/vc4', 'simple',
+@@ -47,6 +77,11 @@ option('libunwind',
+         value : 'auto',
+         description : 'Enable libunwind integration for backtrace generation')
+ 
++option('libdw',
++        type : 'feature',
++        value : 'disabled',
++        description : 'Enable libdw integration for backtrace generation')
++
+ option('pipelines',
+         type : 'array',
+         value : ['auto'],
 diff --git a/src/apps/cam/meson.build b/src/apps/cam/meson.build
 index cd7f120f9..1711630b3 100644
 --- a/src/apps/cam/meson.build
@@ -76,6 +88,19 @@ index af632b9a7..ad36f85c7 100644
  
  subdir('common')
  
+diff --git a/src/libcamera/base/meson.build b/src/libcamera/base/meson.build
+index bcf37f71c..b57774f49 100644
+--- a/src/libcamera/base/meson.build
++++ b/src/libcamera/base/meson.build
+@@ -26,7 +26,7 @@ libcamera_base_internal_sources = files([
+     'utils.cpp',
+ ])
+ 
+-libdw = dependency('libdw', required : false)
++libdw = dependency('libdw', required : get_option('libdw'))
+ libunwind = dependency('libunwind', required : get_option('libunwind'))
+ 
+ if cc.has_header_symbol('execinfo.h', 'backtrace')
 diff --git a/src/libcamera/meson.build b/src/libcamera/meson.build
 index 575408b2c..02db21e2c 100644
 --- a/src/libcamera/meson.build

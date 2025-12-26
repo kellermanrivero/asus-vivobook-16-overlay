@@ -2,22 +2,23 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
+
 PYTHON_COMPAT=( python3_{13..14} )
 
-inherit meson
-inherit python-any-r1
+inherit meson python-any-r1
 
 DESCRIPTION="A complex camera support library for Linux, Android, and ChromeOS"
 HOMEPAGE="https://libcamera.org"
 SRC_URI="https://gitlab.freedesktop.org/camera/libcamera/-/archive/v${PV}/libcamera-v${PV}.tar.bz2 -> ${P}.tar.bz2"
 S="${WORKDIR}/libcamera-v${PV}"
+
 LICENSE="Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+"
 SLOT="0"
 KEYWORDS="~arm64"
-IUSE="drm gnutls openssl gstreamer jpeg tiff libevent qt6 sdl trace +udev unwind v4l test"
-REQUIRED_USE="qt6? ( tiff )"
+IUSE="drm gui gnutls openssl gstreamer jpeg tiff tools qt6 sdl trace +udev elfutils unwind v4l test"
+REQUIRED_USE="qt6? ( tiff gui ) jpeg? ( sdl ) sdl? ( gui )"
 
-DEPEND="
+COMMON_DEPEND="
 	dev-libs/libyaml:=
 	openssl? ( dev-libs/openssl:= )
 	gnutls? ( net-libs/gnutls:= )
@@ -25,28 +26,37 @@ DEPEND="
 		>=media-libs/gstreamer-1.14.0:1.0
 		>=media-libs/gst-plugins-base-1.14:1.0
 	)
-	libevent? (
+	tools? (
 		dev-libs/libevent:=
 		drm? ( x11-libs/libdrm:= )
-		sdl? (
-			media-libs/libsdl2:=
-			jpeg? ( media-libs/libjpeg-turbo:= )
+		gui? (
+			sdl? (
+				media-libs/libsdl2:=
+				jpeg? ( media-libs/libjpeg-turbo:= )
+			)
+			qt6? (
+				dev-qt/qtbase:6
+				dev-qt/qtbase:6[gui,opengl,widgets]
+			)
 		)
-	)
-	qt6? (
-		dev-qt/qtbase:6
-		dev-qt/qtbase:6[gui,widgets]
 	)
 	tiff? ( media-libs/tiff:= )
 	trace? (
 		dev-util/lttng-ust:=
-		dev-cpp/gtest:=
 	)
 	udev? ( virtual/libudev:= )
 	unwind? ( sys-libs/libunwind:= )
+	elfutils? ( dev-libs/elfutils:= )
 	test? ( media-libs/libyuv:= )
 "
-RDEPEND="${DEPEND}"
+DEPEND="
+	${COMMON_DEPEND}
+	trace? (
+		dev-cpp/gtest:=
+	)
+"
+
+RDEPEND="${COMMON_DEPEND}"
 BDEPEND="
 	${PYTHON_DEPS}
 	$(python_gen_any_dep '
@@ -72,7 +82,14 @@ src_configure() {
 		# Broken for >=dev-pyhon/sphinx-7
 		# $(meson_feature doc documentation)
 		-Ddocumentation=disabled
-		$(meson_feature libevent cam)
+		# TODO: Python bindings are disabled for now since they are experimental
+		-Dpycamera=disabled
+		# TODO: Skipping 'rpi/pisp' and 'virtual' pipelines.
+		# 	- Pipeline 'rpi/pisp' depends on libpisp not available in Gentoo repository yet.
+		# 	- Pipeline 'virtual' depends on libyuv but seems to be only used during tests.
+		-Dpipelines=imx8-isi,ipu3,mali-c55,rkisp1,rpi/vc4,simple,uvcvideo,vimc
+		$(meson_feature tools cam)
+		$(meson_feature tools lc-compliance)
 		$(meson_feature drm cam-drm-sink)
 		$(meson_feature sdl cam-sdl-sink)
 		$(meson_feature jpeg cam-sdl-jpeg)
@@ -83,13 +100,11 @@ src_configure() {
 		$(meson_feature qt6 qcam)
 		$(meson_feature trace tracing)
 		$(meson_feature unwind libunwind)
+		$(meson_feature elfutils libdw)
 		$(meson_feature udev)
+		$(meson_feature v4l v4l2)
 		$(meson_use test)
-		$(meson_use v4l v4l2)
 	)
 
-	# TODO: Skipping 'rpi/pisp' and 'virtual' pipelines.
-	# 	- Pipeline 'rpi/pisp' depends on libpisp not available in Gentoo repository yet.
-	# 	- Pipeline 'virtual' depends on libyuv but seems to be only used during tests.
-	meson_src_configure "-Dpipelines=imx8-isi,ipu3,mali-c55,rkisp1,rpi/vc4,simple,uvcvideo,vimc"
+	meson_src_configure
 }
