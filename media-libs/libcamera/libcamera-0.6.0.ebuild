@@ -15,17 +15,19 @@ S="${WORKDIR}/libcamera-v${PV}"
 LICENSE="Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64"
-IUSE="drm elfutils +gnutls gstreamer gui jpeg openssl qt6 sdl test tiff tools trace +udev unwind v4l"
-REQUIRED_USE="qt6? ( gui ) ^^ ( gnutls openssl )"
+IUSE="drm elfutils gstreamer gui jpeg openssl sdl test tiff tools trace +udev unwind v4l"
+RESTRICT="!test? ( test )"
+REQUIRED_USE="sdl? ( gui )"
 
 COMMON_DEPEND="
 	dev-libs/libyaml:=
 	elfutils? ( dev-libs/elfutils:= )
-	gnutls? ( net-libs/gnutls:= )
 	gstreamer? (
+		dev-libs/glib:2
 		>=media-libs/gstreamer-1.14.0:1.0
 		>=media-libs/gst-plugins-base-1.14:1.0
 	)
+	!openssl? ( net-libs/gnutls:= )
 	openssl? ( dev-libs/openssl:= )
 	test? ( media-libs/libyuv:= )
 	tiff? ( media-libs/tiff:= )
@@ -33,10 +35,8 @@ COMMON_DEPEND="
 		dev-libs/libevent:=
 		drm? ( x11-libs/libdrm:= )
 		gui? (
-			qt6? (
-				dev-qt/qtbase:6
-				dev-qt/qtbase:6[gui,opengl,widgets]
-			)
+			dev-qt/qtbase:6
+			dev-qt/qtbase:6[gui,opengl,widgets]
 			sdl? (
 				media-libs/libsdl2:=
 				jpeg? ( media-libs/libjpeg-turbo:= )
@@ -58,7 +58,6 @@ DEPEND="
 
 RDEPEND="
 	${COMMON_DEPEND}
-	dev-libs/glib:2
 "
 
 BDEPEND="
@@ -70,7 +69,6 @@ BDEPEND="
 	')
 "
 
-RESTRICT="!test? ( test )"
 PATCHES=(
 	"${FILESDIR}"/${PN}-no-automagic-flags.patch
 )
@@ -99,8 +97,7 @@ src_configure() {
 		$(meson_feature jpeg cam-sdl-jpeg)
 		$(meson_feature tiff tiff)
 		$(meson_feature gstreamer)
-		$(meson_feature gnutls)
-		$(meson_feature openssl)
+		$(meson_feature !openssl gnutls)
 		$(meson_feature trace tracing)
 		$(meson_feature unwind libunwind)
 		$(meson_feature elfutils libdw)
@@ -109,8 +106,8 @@ src_configure() {
 		$(meson_use test)
 	)
 
-	# QCam requires both tools & qt6 USE flags to be enabled
-	if use tools && use qt6; then
+	# QCam requires both tools & gui USE flags to be enabled
+	if use tools && use gui; then
 		emesonargs+=(
 			-Dqcam=enabled
 		)
