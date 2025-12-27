@@ -3,7 +3,7 @@
 
 EAPI=8
 
-PYTHON_COMPAT=( python3_{13..14} )
+PYTHON_COMPAT=( python3_{11..14} )
 
 inherit meson python-any-r1
 
@@ -14,49 +14,53 @@ S="${WORKDIR}/libcamera-v${PV}"
 
 LICENSE="Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+"
 SLOT="0"
-KEYWORDS="~arm64"
-IUSE="drm gui gnutls openssl gstreamer jpeg tiff tools qt6 sdl trace +udev elfutils unwind v4l test"
-REQUIRED_USE="qt6? ( tiff gui )"
+KEYWORDS="~amd64 ~arm64"
+IUSE="drm elfutils +gnutls gstreamer gui jpeg openssl qt6 sdl test tiff tools trace +udev unwind v4l"
+REQUIRED_USE="qt6? ( gui ) ^^ ( gnutls openssl )"
 
 COMMON_DEPEND="
 	dev-libs/libyaml:=
-	openssl? ( dev-libs/openssl:= )
+	elfutils? ( dev-libs/elfutils:= )
 	gnutls? ( net-libs/gnutls:= )
 	gstreamer? (
 		>=media-libs/gstreamer-1.14.0:1.0
 		>=media-libs/gst-plugins-base-1.14:1.0
 	)
+	openssl? ( dev-libs/openssl:= )
+	test? ( media-libs/libyuv:= )
+	tiff? ( media-libs/tiff:= )
 	tools? (
 		dev-libs/libevent:=
 		drm? ( x11-libs/libdrm:= )
 		gui? (
-			sdl? (
-				media-libs/libsdl2:=
-				jpeg? ( media-libs/libjpeg-turbo:= )
-			)
 			qt6? (
 				dev-qt/qtbase:6
 				dev-qt/qtbase:6[gui,opengl,widgets]
 			)
+			sdl? (
+				media-libs/libsdl2:=
+				jpeg? ( media-libs/libjpeg-turbo:= )
+			)
 		)
 	)
-	tiff? ( media-libs/tiff:= )
 	trace? (
 		dev-util/lttng-ust:=
 	)
 	udev? ( virtual/libudev:= )
 	unwind? ( sys-libs/libunwind:= )
-	elfutils? ( dev-libs/elfutils:= )
-	test? ( media-libs/libyuv:= )
 "
 DEPEND="
 	${COMMON_DEPEND}
-	trace? (
+	tools? (
 		dev-cpp/gtest:=
 	)
 "
 
-RDEPEND="${COMMON_DEPEND}"
+RDEPEND="
+	${COMMON_DEPEND}
+	dev-libs/glib:2
+"
+
 BDEPEND="
 	${PYTHON_DEPS}
 	$(python_gen_any_dep '
@@ -79,7 +83,7 @@ python_check_deps() {
 
 src_configure() {
 	local emesonargs=(
-		# Broken for >=dev-pyhon/sphinx-7
+		# Broken for >=dev-python/sphinx-7
 		# $(meson_feature doc documentation)
 		-Ddocumentation=disabled
 		# TODO: Python bindings are disabled for now since they are experimental

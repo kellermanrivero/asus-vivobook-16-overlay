@@ -1,17 +1,17 @@
-BDEPEND=|| ( dev-lang/python:3.14 dev-lang/python:3.13 ) || ( ( dev-lang/python:3.14 dev-python/jinja2[python_targets_python3_14(-)] dev-python/ply[python_targets_python3_14(-)] dev-python/pyyaml[python_targets_python3_14(-)] ) ( dev-lang/python:3.13 dev-python/jinja2[python_targets_python3_13(-)] dev-python/ply[python_targets_python3_13(-)] dev-python/pyyaml[python_targets_python3_13(-)] ) ) >=dev-build/meson-1.2.3 app-alternatives/ninja dev-build/meson-format-array
+BDEPEND=|| ( dev-lang/python:3.14 dev-lang/python:3.13 dev-lang/python:3.12 dev-lang/python:3.11 ) || ( ( dev-lang/python:3.14 dev-python/jinja2[python_targets_python3_14(-)] dev-python/ply[python_targets_python3_14(-)] dev-python/pyyaml[python_targets_python3_14(-)] ) ( dev-lang/python:3.13 dev-python/jinja2[python_targets_python3_13(-)] dev-python/ply[python_targets_python3_13(-)] dev-python/pyyaml[python_targets_python3_13(-)] ) ( dev-lang/python:3.12 dev-python/jinja2[python_targets_python3_12(-)] dev-python/ply[python_targets_python3_12(-)] dev-python/pyyaml[python_targets_python3_12(-)] ) ( dev-lang/python:3.11 dev-python/jinja2[python_targets_python3_11(-)] dev-python/ply[python_targets_python3_11(-)] dev-python/pyyaml[python_targets_python3_11(-)] ) ) >=dev-build/meson-1.2.3 app-alternatives/ninja dev-build/meson-format-array
 DEFINED_PHASES=compile configure install setup test
-DEPEND=dev-libs/libyaml:= openssl? ( dev-libs/openssl:= ) gnutls? ( net-libs/gnutls:= ) gstreamer? ( >=media-libs/gstreamer-1.14.0:1.0 >=media-libs/gst-plugins-base-1.14:1.0 ) tools? ( dev-libs/libevent:= drm? ( x11-libs/libdrm:= ) gui? ( sdl? ( media-libs/libsdl2:= jpeg? ( media-libs/libjpeg-turbo:= ) ) qt6? ( dev-qt/qtbase:6 dev-qt/qtbase:6[gui,opengl,widgets] ) ) ) tiff? ( media-libs/tiff:= ) trace? ( dev-util/lttng-ust:= ) udev? ( virtual/libudev:= ) unwind? ( sys-libs/libunwind:= ) elfutils? ( dev-libs/elfutils:= ) test? ( media-libs/libyuv:= ) trace? ( dev-cpp/gtest:= )
+DEPEND=dev-libs/libyaml:= elfutils? ( dev-libs/elfutils:= ) gnutls? ( net-libs/gnutls:= ) gstreamer? ( >=media-libs/gstreamer-1.14.0:1.0 >=media-libs/gst-plugins-base-1.14:1.0 ) openssl? ( dev-libs/openssl:= ) test? ( media-libs/libyuv:= ) tiff? ( media-libs/tiff:= ) tools? ( dev-libs/libevent:= drm? ( x11-libs/libdrm:= ) gui? ( qt6? ( dev-qt/qtbase:6 dev-qt/qtbase:6[gui,opengl,widgets] ) sdl? ( media-libs/libsdl2:= jpeg? ( media-libs/libjpeg-turbo:= ) ) ) ) trace? ( dev-util/lttng-ust:= ) udev? ( virtual/libudev:= ) unwind? ( sys-libs/libunwind:= ) tools? ( dev-cpp/gtest:= )
 DESCRIPTION=A complex camera support library for Linux, Android, and ChromeOS
 EAPI=8
 HOMEPAGE=https://libcamera.org
 INHERIT=meson python-any-r1
-IUSE=drm gui gnutls openssl gstreamer jpeg tiff tools qt6 sdl trace +udev elfutils unwind v4l test
-KEYWORDS=~arm64
+IUSE=drm elfutils +gnutls gstreamer gui jpeg openssl qt6 sdl test tiff tools trace +udev unwind v4l
+KEYWORDS=~amd64 ~arm64
 LICENSE=Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+
-RDEPEND=dev-libs/libyaml:= openssl? ( dev-libs/openssl:= ) gnutls? ( net-libs/gnutls:= ) gstreamer? ( >=media-libs/gstreamer-1.14.0:1.0 >=media-libs/gst-plugins-base-1.14:1.0 ) tools? ( dev-libs/libevent:= drm? ( x11-libs/libdrm:= ) gui? ( sdl? ( media-libs/libsdl2:= jpeg? ( media-libs/libjpeg-turbo:= ) ) qt6? ( dev-qt/qtbase:6 dev-qt/qtbase:6[gui,opengl,widgets] ) ) ) tiff? ( media-libs/tiff:= ) trace? ( dev-util/lttng-ust:= ) udev? ( virtual/libudev:= ) unwind? ( sys-libs/libunwind:= ) elfutils? ( dev-libs/elfutils:= ) test? ( media-libs/libyuv:= )
-REQUIRED_USE=qt6? ( tiff gui )
+RDEPEND=dev-libs/libyaml:= elfutils? ( dev-libs/elfutils:= ) gnutls? ( net-libs/gnutls:= ) gstreamer? ( >=media-libs/gstreamer-1.14.0:1.0 >=media-libs/gst-plugins-base-1.14:1.0 ) openssl? ( dev-libs/openssl:= ) test? ( media-libs/libyuv:= ) tiff? ( media-libs/tiff:= ) tools? ( dev-libs/libevent:= drm? ( x11-libs/libdrm:= ) gui? ( qt6? ( dev-qt/qtbase:6 dev-qt/qtbase:6[gui,opengl,widgets] ) sdl? ( media-libs/libsdl2:= jpeg? ( media-libs/libjpeg-turbo:= ) ) ) ) trace? ( dev-util/lttng-ust:= ) udev? ( virtual/libudev:= ) unwind? ( sys-libs/libunwind:= ) dev-libs/glib:2
+REQUIRED_USE=qt6? ( gui ) ^^ ( gnutls openssl )
 RESTRICT=!test? ( test )
 SLOT=0
 SRC_URI=https://gitlab.freedesktop.org/camera/libcamera/-/archive/v0.6.0/libcamera-v0.6.0.tar.bz2 -> libcamera-0.6.0.tar.bz2
 _eclasses_=toolchain-funcs	98d9f464d912ae6b7316fb8a3721f5db	flag-o-matic	a7afe42e95fb46ce9691605acfb24672	multiprocessing	1e32df7deee68372153dca65f4a7c21f	ninja-utils	3a59a39e97af0f7c03f49cf3c22f262b	python-utils-r1	dbb8c4d794033ad7e7221eaf567a6c90	meson	99e6a34d0f7039439dad788f7443b574	python-any-r1	891415dfe39ad9b41b461f2b86354af0
-_md5_=126c7de447a065f82b2f4432b0204451
+_md5_=c9ed06b6941bba9ac49060c487cf0689
