@@ -5,59 +5,57 @@ EAPI=8
 
 PYTHON_COMPAT=( python3_{11..14} )
 
-inherit meson python-any-r1
+inherit edo meson python-any-r1
 
-DESCRIPTION="A complex camera support library for Linux, Android, and ChromeOS"
+DESCRIPTION="Complex camera support library"
 HOMEPAGE="https://libcamera.org"
 SRC_URI="https://gitlab.freedesktop.org/camera/libcamera/-/archive/v${PV}/libcamera-v${PV}.tar.bz2 -> ${P}.tar.bz2"
 S="${WORKDIR}/libcamera-v${PV}"
 
-LICENSE="Apache-2.0 CC0-1.0 BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+"
+LICENSE="Apache-2.0 CC0-1.0 BSD BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+ MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64"
 IUSE="drm elfutils gstreamer gui jpeg openssl sdl test tiff tools trace +udev unwind v4l"
 RESTRICT="!test? ( test )"
-REQUIRED_USE="sdl? ( gui )"
+REQUIRED_USE="
+	sdl? ( gui )
+	test? ( udev )
+"
 
-COMMON_DEPEND="
-	dev-libs/libyaml:=
-	elfutils? ( dev-libs/elfutils:= )
+DEPEND="
+	dev-libs/libyaml
+	elfutils? ( dev-libs/elfutils )
 	gstreamer? (
 		dev-libs/glib:2
 		>=media-libs/gstreamer-1.14.0:1.0
 		>=media-libs/gst-plugins-base-1.14:1.0
 	)
-	!openssl? ( net-libs/gnutls:= )
-	openssl? ( dev-libs/openssl:= )
-	test? ( media-libs/libyuv:= )
-	tiff? ( media-libs/tiff:= )
+	!openssl? ( net-libs/gnutls )
+	openssl? ( dev-libs/openssl )
+	test? ( media-libs/libyuv )
 	tools? (
-		dev-libs/libevent:=
-		drm? ( x11-libs/libdrm:= )
+		dev-cpp/gtest
+		dev-libs/libevent
+		drm? ( x11-libs/libdrm )
 		gui? (
 			dev-qt/qtbase:6
 			dev-qt/qtbase:6[gui,opengl,widgets]
 			sdl? (
-				media-libs/libsdl2:=
-				jpeg? ( media-libs/libjpeg-turbo:= )
+				media-libs/libsdl2
+				jpeg? ( media-libs/libjpeg-turbo )
 			)
 		)
+		tiff? ( media-libs/tiff )
 	)
 	trace? (
-		dev-util/lttng-ust:=
+		dev-util/lttng-ust
 	)
-	udev? ( virtual/libudev:= )
-	unwind? ( sys-libs/libunwind:= )
-"
-DEPEND="
-	${COMMON_DEPEND}
-	tools? (
-		dev-cpp/gtest:=
-	)
+	udev? ( virtual/libudev )
+	unwind? ( sys-libs/libunwind )
 "
 
 RDEPEND="
-	${COMMON_DEPEND}
+	${DEPEND}
 "
 
 BDEPEND="
@@ -118,4 +116,17 @@ src_configure() {
 	fi
 
 	meson_src_configure
+}
+
+pkg_preinst() {
+	# IPA modules must be resigned after the strip-process, then verified
+	local mods=()
+	mapfile -t -d '' mods < <(find -H "${ED}"/usr/$(get_libdir)/libcamera/ipa/ -type f -name '*.so' -print0)
+	edob -m "Regenerating IPA modules signatures" \
+		"${S}"/src/ipa/ipa-sign-install.sh \
+		"${BUILD_DIR}"/src/ipa-priv-key.pem "${mods[@]}"
+	local mod
+	for mod in "${mods[@]}"; do
+		edob -m "Verifying signature for ${mod##*/}" "${BUILD_DIR}"/src/apps/ipa-verify/ipa_verify "${mod}"
+	done
 }
