@@ -25,7 +25,8 @@ REQUIRED_USE="
 	test? ( udev )
 "
 
-DEPEND="
+# 'dev-cpp/gtest' is required as runtime dependency because it's used by lc-compliance tool
+COMMON_DEPEND="
 	dev-libs/libyaml
 	elfutils? ( dev-libs/elfutils )
 	gstreamer? (
@@ -35,13 +36,11 @@ DEPEND="
 	)
 	!openssl? ( net-libs/gnutls:= )
 	openssl? ( dev-libs/openssl:= )
-	test? ( media-libs/libyuv:= )
 	tools? (
 		dev-cpp/gtest:=
 		dev-libs/libevent:=
 		drm? ( x11-libs/libdrm )
 		gui? (
-			dev-qt/qtbase:6
 			dev-qt/qtbase:6[gui,opengl,widgets]
 			sdl? (
 				media-libs/libsdl2
@@ -57,8 +56,13 @@ DEPEND="
 	unwind? ( sys-libs/libunwind:= )
 "
 
+DEPEND="
+	${COMMON_DEPEND}
+	test? ( media-libs/libyuv:= )
+"
+
 RDEPEND="
-	${DEPEND}
+	${COMMON_DEPEND}
 "
 
 BDEPEND="
