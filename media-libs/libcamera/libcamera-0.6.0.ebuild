@@ -5,7 +5,7 @@ EAPI=8
 
 PYTHON_COMPAT=( python3_{11..14} )
 
-inherit edo meson python-any-r1
+inherit meson python-any-r1
 
 DESCRIPTION="Complex camera support library"
 HOMEPAGE="https://libcamera.org"
@@ -128,22 +128,9 @@ src_configure() {
 }
 
 src_install() {
-	cp -v "${BUILD_DIR}"/src/apps/ipa-verify/ipa_verify "${T}" || die
-
 	meson_src_install
 
 	# Exclude IPA signed modules from stripping process
 	# Note: This is required to prevent strip tool to invalidate their signature
 	dostrip -x "/usr/$(get_libdir)/libcamera/ipa/"
-}
-
-pkg_preinst() {
-	local mods=()
-	mapfile -t -d '' mods < <(find -H "${ED}"/usr/$(get_libdir)/libcamera/ipa/ -type f -name '*.so' -print0)
-	local -x LD_LIBRARY_PATH="${ED}/usr/$(get_libdir):${LD_LIBRARY_PATH}"
-	local mod
-	for mod in "${mods[@]}"; do
-		edob -m "Verifying signature for ${mod##*/}" "${T}"/ipa_verify "${mod}"
-	done
-	rm -v "${T}"/ipa_verify || die
 }
