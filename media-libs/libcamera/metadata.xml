@@ -9,8 +9,7 @@
     <flag name="drm">Build with drm support for cam tool</flag>
     <flag name="elfutils">Build with improved debugging using <pkg>dev-libs/elfutils</pkg></flag>
     <flag name="gui">Build QCam extra tool</flag>
-    <flag name="ipa-signing">Sign IPA modules. Note: Without IPA module signing, all IPA modules will be isolated in a separate process. This adds an unnecessary extra overhead at runtime.</flag>
-    <flag name="openssl">Build with IPA module signing using <pkg>dev-libs/openssl</pkg></flag>
+    <flag name="openssl">Verify IPA modules signatures using <pkg>dev-libs/openssl</pkg>. Note:<pkg>dev-libs/openssl</pkg> is also required at build time to sign IPA modules.</flag>
     <flag name="sdl">Build Cam extra tool with SDL sink support (requires USE=gui)</flag>
     <flag name="tools">Build extra tools (including cam, qcam and lc-compliance). Note: 'qcam' requires also USE="gui"</flag>
     <flag name="trace">Build with tracing capabilities</flag>

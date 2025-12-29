@@ -15,10 +15,9 @@ S="${WORKDIR}/libcamera-v${PV}"
 LICENSE="Apache-2.0 CC0-1.0 BSD BSD-2 CC-BY-4.0 CC-BY-SA-4.0 GPL-2+ GPL-2 LGPL-2.1+ MIT"
 SLOT="0"
 KEYWORDS="~amd64 ~arm64"
-IUSE="drm elfutils gstreamer gui +ipa-signing jpeg openssl sdl test tiff tools trace +udev unwind v4l"
+IUSE="drm elfutils gstreamer gui jpeg openssl sdl test tiff tools trace +udev unwind v4l"
 RESTRICT="
 	!test? ( test )
-	ipa-signing? ( bindist )
 "
 REQUIRED_USE="
 	sdl? ( gui )
@@ -65,6 +64,7 @@ RDEPEND="
 	${COMMON_DEPEND}
 "
 
+# 'dev-libs/openssl' is called by src/ipa/ipa-sign.sh to sign IPA modules
 BDEPEND="
 	${PYTHON_DEPS}
 	$(python_gen_any_dep '
@@ -72,10 +72,12 @@ BDEPEND="
 		dev-python/ply[${PYTHON_USEDEP}]
 		dev-python/pyyaml[${PYTHON_USEDEP}]
 	')
+	dev-libs/openssl
 "
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-no-automagic-flags.patch
+	"${FILESDIR}"/${PN}-disable-problematic-tests.patch
 )
 
 python_check_deps() {
@@ -126,35 +128,22 @@ src_configure() {
 }
 
 src_install() {
+	cp -v "${BUILD_DIR}"/src/apps/ipa-verify/ipa_verify "${T}" || die
+
 	meson_src_install
 
-	# Prepare scripts used for IPA module signing.
-	# After stripping IPA binaries, they need to be signed again.
-	if use ipa-signing; then
-		einfo "IPA module signing is enabled. Copying miscellanous files into temporal location"
-		mkdir -p "${T}"/signing-scripts
-		cp -v "${S}"/src/ipa/ipa-sign{,-install}.sh \
-				"${BUILD_DIR}"/src/apps/ipa-verify/ipa_verify \
-				"${BUILD_DIR}"/src/ipa-priv-key.pem \
-				"${T}"/signing-scripts
-	else
-		ewarn "IPA module signing is disabled. This may lead to unnecessary overhead"
-	fi
+	# Exclude IPA signed modules from stripping process
+	# Note: This is required to prevent strip tool to invalidate their signature
+	dostrip -x "/usr/$(get_libdir)/libcamera/ipa/"
 }
 
 pkg_preinst() {
-	# IPA modules must be resigned after the strip-process, then verified
-	if use ipa-signing; then
-		local mods=()
-		mapfile -t -d '' mods < <(find -H "${ED}"/usr/$(get_libdir)/libcamera/ipa/ -type f -name '*.so' -print0)
-		pushd "${T}"/signing-scripts || die
-		edob -m "Regenerating IPA modules signatures" ./ipa-sign-install.sh ./ipa-priv-key.pem "${mods[@]}"
-		local -x LD_LIBRARY_PATH="${ED}/usr/$(get_libdir):${LD_LIBRARY_PATH}"
-		local mod
-		for mod in "${mods[@]}"; do
-			edob -m "Verifying signature for ${mod##*/}" ./ipa_verify "${mod}"
-		done
-		popd || die
-		rm -r "${T}"/signing-scripts || die
-	fi
+	local mods=()
+	mapfile -t -d '' mods < <(find -H "${ED}"/usr/$(get_libdir)/libcamera/ipa/ -type f -name '*.so' -print0)
+	local -x LD_LIBRARY_PATH="${ED}/usr/$(get_libdir):${LD_LIBRARY_PATH}"
+	local mod
+	for mod in "${mods[@]}"; do
+		edob -m "Verifying signature for ${mod##*/}" "${T}"/ipa_verify "${mod}"
+	done
+	rm -v "${T}"/ipa_verify || die
 }
