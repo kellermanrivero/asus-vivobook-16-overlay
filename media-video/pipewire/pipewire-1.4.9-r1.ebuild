@@ -63,8 +63,8 @@ HOMEPAGE="https://pipewire.org/"
 LICENSE="MIT LGPL-2.1+ GPL-2"
 # ABI was broken in 0.3.42 for https://gitlab.freedesktop.org/pipewire/wireplumber/-/issues/49
 SLOT="0/0.4"
-IUSE="${PIPEWIRE_DOCS_USEFLAG} bluetooth elogind dbus doc echo-cancel extra ffmpeg fftw flatpak gstreamer gsettings ieee1394 jack-client jack-sdk liblc3 loudness lv2"
-IUSE+=" modemmanager pipewire-alsa readline roc selinux sound-server ssl system-service systemd test v4l X zeroconf libcamera"
+IUSE="${PIPEWIRE_DOCS_USEFLAG} bluetooth elogind dbus doc echo-cancel extra ffmpeg fftw flatpak gstreamer gsettings ieee1394 jack-client jack-sdk libcamera liblc3 loudness lv2"
+IUSE+=" modemmanager pipewire-alsa readline roc selinux sound-server ssl system-service systemd test v4l X zeroconf "
 
 # Once replacing system JACK libraries is possible, it's likely that
 # jack-client IUSE will need blocking to avoid users accidentally
@@ -129,7 +129,6 @@ RDEPEND="
 		>=net-wireless/bluez-4.101:=
 		virtual/libusb:1
 	)
-	libcamera? ( media-libs/libcamera )
 	elogind? ( sys-auth/elogind )
 	dbus? ( sys-apps/dbus[${MULTILIB_USEDEP}] )
 	echo-cancel? (
@@ -155,6 +154,7 @@ RDEPEND="
 		!media-sound/jack-audio-connection-kit
 		!media-sound/jack2
 	)
+	libcamera? ( media-libs/libcamera )
 	liblc3? ( media-sound/liblc3 )
 	loudness? ( media-libs/libebur128:=[${MULTILIB_USEDEP}] )
 	lv2? ( media-libs/lilv )
