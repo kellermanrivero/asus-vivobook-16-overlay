@@ -65,7 +65,7 @@ LICENSE="MIT LGPL-2.1+ GPL-2"
 SLOT="0/0.4"
 IUSE="${PIPEWIRE_DOCS_USEFLAG} bluetooth elogind dbus doc echo-cancel extra ffmpeg fftw flatpak gstreamer gsettings"
 IUSE+=" ieee1394 jack-client jack-sdk libcamera liblc3 loudness lv2 modemmanager pipewire-alsa readline roc selinux"
-IUSE+=" sound-server ssl system-service systemd test v4l X zeroconf "
+IUSE+=" sound-server ssl system-service systemd test v4l X zeroconf"
 
 # Once replacing system JACK libraries is possible, it's likely that
 # jack-client IUSE will need blocking to avoid users accidentally
@@ -553,4 +553,3 @@ pkg_postinst() {
 		optfeature "ALSA plugin to use PulseAudio interface for output" "media-plugins/alsa-plugins[pulseaudio]"
 	fi
 }
-

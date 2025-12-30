@@ -52,10 +52,8 @@ else
 		PIPEWIRE_DOCS_USEFLAG="man"
 	fi
 
-	KEYWORDS="amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv ~sparc x86"
+	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
 fi
-
-SRC_URI+=" https://dev.gentoo.org/~sam/distfiles/${CATEGORY}/${PN}/${PN}-1.4.7-0001-don-t-include-standard-C-headers-inside-of-extern-C.patch.xz"
 
 DESCRIPTION="Multimedia processing graphs"
 HOMEPAGE="https://pipewire.org/"
@@ -65,7 +63,7 @@ LICENSE="MIT LGPL-2.1+ GPL-2"
 SLOT="0/0.4"
 IUSE="${PIPEWIRE_DOCS_USEFLAG} bluetooth elogind dbus doc echo-cancel extra ffmpeg fftw flatpak gstreamer gsettings"
 IUSE+=" ieee1394 jack-client jack-sdk libcamera liblc3 loudness lv2 modemmanager pipewire-alsa readline roc selinux"
-IUSE+=" sound-server ssl system-service systemd test v4l X zeroconf "
+IUSE+=" sound-server ssl system-service systemd test v4l X zeroconf"
 
 # Once replacing system JACK libraries is possible, it's likely that
 # jack-client IUSE will need blocking to avoid users accidentally
@@ -192,9 +190,6 @@ PDEPEND=">=media-video/wireplumber-0.5.2"
 
 PATCHES=(
 	"${FILESDIR}"/${PN}-0.3.25-enable-failed-mlock-warning.patch
-	"${FILESDIR}"/${PN}-1.4.6-no-automagic-ebur128.patch
-	"${FILESDIR}"/${PN}-1.4.6-no-automagic-fftw.patch
-	"${WORKDIR}"/${PN}-1.4.7-0001-don-t-include-standard-C-headers-inside-of-extern-C.patch
 )
 
 pkg_setup() {
@@ -236,7 +231,7 @@ multilib_src_configure() {
 		$(meson_native_use_feature gstreamer)
 		$(meson_native_use_feature gstreamer gstreamer-device-provider)
 		$(meson_native_use_feature gsettings)
-		$(meson_native_use_feature systemd)
+		$(meson_native_use_feature systemd libsystemd)
 		-Dlogind=${logind}
 		-Dlogind-provider=$(usex systemd 'libsystemd' 'libelogind')
 
@@ -553,4 +548,3 @@ pkg_postinst() {
 		optfeature "ALSA plugin to use PulseAudio interface for output" "media-plugins/alsa-plugins[pulseaudio]"
 	fi
 }
-
