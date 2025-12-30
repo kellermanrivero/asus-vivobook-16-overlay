@@ -52,7 +52,7 @@ else
 		PIPEWIRE_DOCS_USEFLAG="man"
 	fi
 
-	KEYWORDS="amd64 arm arm64 ~loong ~mips ppc ppc64 ~riscv ~sparc x86"
+	KEYWORDS="~amd64 ~arm ~arm64 ~loong ~mips ~ppc ~ppc64 ~riscv ~sparc ~x86"
 fi
 
 DESCRIPTION="Multimedia processing graphs"
@@ -188,7 +188,6 @@ PDEPEND=">=media-video/wireplumber-0.5.2"
 #
 # Ditto for DEPEND
 #	>=dev-util/vulkan-headers-1.1.69
-
 PATCHES=(
 	"${FILESDIR}"/${PN}-0.3.25-enable-failed-mlock-warning.patch
 	"${FILESDIR}"/${PN}-1.4.6-no-automagic-ebur128.patch
